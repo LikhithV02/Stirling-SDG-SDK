@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  stirling-sdg:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stirling-pdf-sdg
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - OCR_LANGUAGES=${OCR_LANGUAGES:-eng}
+    volumes:
+      # Mount input/output directories
+      - ./data/input:/data/input:ro
+      - ./data/output:/data/output
+      - ./data/cache:/data/cache
+      # Mount test data (optional)
+      - ./test_data:/app/test_data:ro
+    working_dir: /app
+
+    # Override command for different use cases:
+    # Extraction only:
+    #   command: python test_extraction.py /data/input/document.pdf -o /data/output
+    # Full pipeline:
+    #   command: python full_pipeline.py /data/input/document.pdf -o /data/output
+    # Interactive shell:
+    #   command: bash
+
+    command: [ "python", "-c", "print('Container ready. Run with: docker-compose run stirling-sdg python test_extraction.py /data/input/YOUR_FILE.pdf -o /data/output')" ]

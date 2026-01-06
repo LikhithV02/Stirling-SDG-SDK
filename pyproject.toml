@@ -1,0 +1,62 @@
+[project]
+name = "stirling-pdf-sdg"
+version = "0.2.0"
+description = "Synthetic Data Generator for PDFs using native Python processing and GitHub Models LLM"
+authors = [{name = "Your Name", email = "email@example.com"}]
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    # Core
+    "requests>=2.31.0",
+    "openai>=1.0.0", # OpenAI SDK for GitHub Models
+    # Configuration
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0",
+    # CLI
+    "click>=8.1.0",
+    "rich>=13.7.0",
+    "tqdm>=4.66.0",
+    # PDF Processing (Native)
+    "pymupdf>=1.26.7",
+    "pdfplumber>=0.11.8",
+    "reportlab>=4.0.0",
+    "ocrmypdf>=16.0.0",
+    "img2pdf>=0.5.0",
+    "pillow>=10.0.0",
+]
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=24.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.8.0",
+]
+
+[project.scripts]
+stirling-sdg = "stirling_sdg.__main__:cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/stirling_sdg"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
