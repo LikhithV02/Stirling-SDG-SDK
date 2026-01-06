@@ -11,6 +11,7 @@ __version__ = "0.2.0"
 from .config.settings import Settings
 from .stirling.client import StirlingClient
 from .stirling.local_client import LocalStirlingClient
+from .stirling.direct_edit_client import DirectEditClient
 from .detection.detector import DocumentDetector
 from .classification.classifier import ContentClassifier
 from .synthesis.generator import SyntheticDataGenerator
@@ -22,6 +23,7 @@ __all__ = [
     "Settings",
     "StirlingClient",
     "LocalStirlingClient",
+    "DirectEditClient",
     "DocumentDetector",
     "ContentClassifier",
     "SyntheticDataGenerator",

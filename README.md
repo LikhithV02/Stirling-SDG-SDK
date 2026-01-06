@@ -108,7 +108,27 @@ python test_extraction.py input.pdf --resolve-collisions
 python test_extraction.py input.pdf --force-ocr
 ```
 
-### Full Pipeline (with LLM synthesis)
+### Direct PDF Editing (Native PDFs)
+
+For native/digital PDFs, use the faster direct editing approach:
+
+```bash
+# Process a native PDF (fast, preserves layout)
+python test_direct_pipeline.py input.pdf
+
+# Generate 5 variations
+python test_direct_pipeline.py input.pdf -n 5 -o output/
+
+# Create template only (for reuse)
+python test_direct_pipeline.py input.pdf --template-only --save-template template.json
+
+# Use existing template
+python test_direct_pipeline.py input.pdf --template template.json -n 10
+```
+
+### Full Pipeline (Scanned PDFs/Images)
+
+For scanned documents and images, use OCR-based reconstruction:
 
 ```bash
 # Process a single document
@@ -126,6 +146,7 @@ python full_pipeline.py input.pdf --skip-synthesis
 ```python
 from stirling_sdg import (
     LocalStirlingClient,
+    DirectEditClient,  # New! For native PDFs
     DocumentDetector,
     ContentClassifier,
     SyntheticDataGenerator,
@@ -135,8 +156,29 @@ from stirling_sdg import (
 
 # Initialize
 settings = Settings()
-client = LocalStirlingClient(cache_dir=Path("./cache"))
 detector = DocumentDetector()
+
+# Detect document type
+doc_type = detector.detect(Path("input.pdf"))  # "digital_pdf", "scanned_pdf", "image"
+
+# For NATIVE PDFs: Use DirectEditClient (faster, preserves layout)
+if doc_type == "digital_pdf":
+    with DirectEditClient(Path("input.pdf")) as client:
+        # Extract text with styles
+        elements = client.extract_text_elements()
+        
+        # Find and replace with style matching
+        client.find_and_replace("Old Text", "New Text")
+        
+        # Or apply template with synthetic data
+        client.apply_template(template, synthetic_data)
+        
+        # Save
+        client.save(Path("output.pdf"))
+
+# For SCANNED PDFs: Use LocalStirlingClient (OCR + reconstruction)
+else:
+    client = LocalStirlingClient(cache_dir=Path("./cache"))
 
 # Detect document type
 doc_type = detector.detect(Path("input.pdf"))  # "digital_pdf", "scanned_pdf", "image"

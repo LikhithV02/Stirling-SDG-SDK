@@ -106,3 +106,8 @@ output/
 outputs/
 *.pdf
 !samples/*.pdf
+configs/
+data/
+logs/
+test_results/
+RESUME*.pdf
